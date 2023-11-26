@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -34,6 +35,12 @@ let posts: PostModel[] = [
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
+
+  //GET all
+  @Get()
+  getPosts() {
+    return posts;
+  }
 
   // GET /posts/:id
   @Get(':id')
@@ -86,5 +93,16 @@ export class PostsController {
 
     posts = posts.map((prevPost) => (prevPost.id === +id ? post : prevPost));
     return post;
+  }
+
+  @Delete(':id')
+  deletePost(@Param('id') id: string) {
+    const post = posts.find((post) => post.id === +id);
+    if (!post) {
+      throw new NotFoundException();
+    }
+    posts = posts.filter((post) => post.id !== +id);
+
+    return id;
   }
 }
