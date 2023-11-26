@@ -11,6 +11,7 @@ import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
+  //nestjs IoC Container
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
