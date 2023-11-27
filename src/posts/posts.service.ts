@@ -9,20 +9,6 @@ export interface PostModel {
   address: string;
 }
 
-let posts: PostModel[] = [
-  {
-    id: 1,
-    name: 'lee',
-    age: 26,
-    address: 'kanagawa',
-  },
-  {
-    id: 2,
-    name: 'ishida',
-    age: 25,
-    address: 'miyagi',
-  },
-];
 @Injectable()
 export class PostsService {
   constructor(
@@ -89,12 +75,15 @@ export class PostsService {
     return newPost;
   }
 
-  deletePost(postId: string) {
-    const post = posts.find((post) => post.id === +postId);
+  async deletePost(postId: string) {
+    const post = await this.postsRepository.findOne({
+      where: { id: +postId },
+    });
+
     if (!post) {
       throw new NotFoundException();
     }
-    posts = posts.filter((post) => post.id !== +postId);
+    await this.postsRepository.delete(postId);
 
     return postId;
   }
