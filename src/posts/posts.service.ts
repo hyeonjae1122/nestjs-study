@@ -46,22 +46,36 @@ export class PostsService {
     }
     return post;
   }
-  createPost(name: string, age: number, address: string) {
-    const post: PostModel = {
-      id: posts[posts.length - 1].id + 1,
+  async createPost(name: string, age: number, address: string) {
+    //1) create -> make object to save
+    //2) save -> save obejct
+    const post = this.postsRepository.create({
       name,
       age,
       address,
-    };
-    posts = [...posts, post];
-    return post;
+    });
+    const newPost = await this.postsRepository.save(post);
+    return newPost;
+    // const post: PostModel = {
+    //   id: posts[posts.length - 1].id + 1,
+    //   name,
+    //   age,
+    //   address,
+    // };
+    // posts = [...posts, post];
+    // return post;
   }
 
-  updatePost(postId: number, name: string, age: number, address: string) {
-    const post = posts.find((result) => result.id === postId);
-    if (!post) {
-      throw new NotFoundException();
-    }
+  async updatePost(postId: number, name: string, age: number, address: string) {
+    // save function
+    // 1) if data is not, make new data by id
+    // 2) if data is(if same id value is), id value is updated
+
+    const post = await this.postsRepository.findOne({
+      where: {
+        id: postId,
+      },
+    });
     if (name) {
       post.name = name;
     }
@@ -71,9 +85,8 @@ export class PostsService {
     if (address) {
       post.address = address;
     }
-
-    posts = posts.map((prevPost) => (prevPost.id === postId ? post : prevPost));
-    return post;
+    const newPost = await this.postsRepository.save(post);
+    return newPost;
   }
 
   deletePost(postId: string) {
