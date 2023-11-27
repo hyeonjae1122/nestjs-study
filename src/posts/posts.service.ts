@@ -34,8 +34,13 @@ export class PostsService {
     return this.postsRepository.find();
   }
 
-  getPostById(id: number) {
-    const post = posts.find((result) => result.id === +id);
+  async getPostById(id: number) {
+    const post = await this.postsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    // const post = posts.find((result) => result.id === +id);
     if (!post) {
       throw new NotFoundException();
     }
